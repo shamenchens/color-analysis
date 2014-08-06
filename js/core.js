@@ -6,12 +6,36 @@
 function stealColor(image) {
   var colorThief = new ColorThief();
   var palettes = colorThief.getPalette(image);
+  var closeColor;
   for (var idx in palettes) {
+    var rgb = palettes[idx];
     if (idx < 6) {
-      var divPalette = $('.palette-' + idx);
-      var rgb = 'rgb(' + palettes[idx] + ')';
-      divPalette.css('background-color', rgb);
+      if (idx == 0) {
+        closeColor = colorDiff.closest(
+          {R: rgb[0], G: rgb[1], B: rgb[2]}, colorPalette);
+      }
+      var div = $('.palette-' + idx);
+      var background = 'rgb(' + rgb + ')';
+      div.css('background-color', background);
+      div.siblings().html(rgb.toString());
     }
+  }
+  fillPalette('color', colorPalette, closeColor);
+}
+
+function fillPalette(classPrefix, target, closeColor) {
+  for (var idx in target) {
+    var descStyle = 'no-match';
+    var div = $('.' + classPrefix + '-' + idx);
+    var rgb = [target[idx].R, target[idx].G, target[idx].B];
+    if (rgb[0] == closeColor[0] &&
+        rgb[1] == closeColor[1] &&
+        rgb[2] == closeColor[2]) {
+      descStyle = 'match';
+    }
+    var background = 'rgb(' + rgb + ')';
+    div.css('background-color', background);
+    div.siblings().html(rgb.toString()).addClass(descStyle);
   }
 }
 
@@ -67,6 +91,7 @@ $(document).ready(function() {
     };
     var handleDrop = function(e){
       imageDrop.removeClass('dragging');
+      $('.desc').removeClass('match').removeClass('no-match');
       handleFiles(e.originalEvent.dataTransfer.files);
       return false;
     };

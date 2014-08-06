@@ -15,3 +15,11 @@
   padding-bottom: 100%;
   margin: 0 auto;
 }
+
+.no-match {
+  color: #999999;
+}
+
+.match {
+  font-weight: bold;
+}
